@@ -38,7 +38,7 @@
 </style>
 </head>
 <body>
-<h2>UPC & Code128 Scanner v4.0</h2>
+<h2>UPC & Code128 Scanner v5.0</h2>
 <div id="qr-container">
   <div id="result-overlay"></div>
   <div id="qr-video"></div>
@@ -70,6 +70,11 @@ function calculateQrbox(viewfinderWidth, viewfinderHeight) {
 
 const config = {
   fps: 8,
+ videoConstraints: {
+	width: 1920,
+	height: 1080,
+	facingMode: "environment",
+	},
   qrbox: calculateQrbox,
   disableFlip: false,
   showZoomSliderIfSupported: true,
