@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPC & Code128 Scanner</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #111;
+      color: white;
+    }
+    #qr-reader {
+      width: 100%;
+      max-width: 600px;
+      margin: auto;
+    }
+    #result-overlay {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 200, 0, 0.9);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-size: 18px;
+      display: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <h2>UPC & Code128 Scanner</h2>
+  <div id="qr-reader"></div>
+  <div id="result-overlay"></div>
+
+  <!-- Load html5-qrcode -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <script>
+    const overlay = document.getElementById("result-overlay");
+
+    function showOverlay(message) {
+      overlay.innerText = message;
+      overlay.style.display = "block";
+      setTimeout(() => {
+        overlay.style.display = "none";
+      }, 3000); // hide after 3 sec
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+      console.log(`Scan result: ${decodedText}`, decodedResult);
+      showOverlay(`✅ ${decodedText}`);
+    }
+
+    function onScanFailure(error) {
+      // Optional debug: console.warn(error);
+    }
+
+    // Auto-fit qrbox depending on screen width
+    function calculateQrbox(viewfinderWidth, viewfinderHeight) {
+      const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+      return {
+        width: Math.floor(minEdge * 0.9),
+        height: Math.floor(minEdge * 0.3) // rectangle
+      };
+    }
+
+    const config = {
+      fps: 10,
+      qrbox: calculateQrbox,
+      formatsToSupport: [
+        Html5QrcodeSupportedFormats.UPC_A,
+        Html5QrcodeSupportedFormats.UPC_E,
+        Html5QrcodeSupportedFormats.CODE_128
+      ]
+    };
+
+    let scanner = new Html5QrcodeScanner("qr-reader", config);
+    scanner.render(onScanSuccess, onScanFailure);
+  </script>
+</body>
+</html>
