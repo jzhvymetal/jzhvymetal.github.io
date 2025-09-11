@@ -106,13 +106,19 @@ Html5Qrcode.getCameras().then(cameras => {
   }
 }).catch(err => console.error(err));
 
-  // wait 2 seconds to guarantee the camera has already started to apply the focus mode and zoom...
-  setTimeout(function () {
+
+let theInterval = null;
+theInterval = setInterval(function () {
+  if (Html5Qrcode.getState() === Html5QrcodeScannerState.SCANNING) {
+	console.log("Applying video constraints");
 	Html5Qrcode.applyVideoConstraints({
 	  focusMode: "continuous",
 	  advanced: [{ zoom: 2.0 }],
 	});
-  }, 2000);
+	clearInterval(theInterval);
+  }
+}, 1000);
+
 	
 </script>
 </body>
