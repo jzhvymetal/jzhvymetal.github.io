@@ -38,7 +38,7 @@
 </style>
 </head>
 <body>
-<h2>UPC & Code128 Scanner v3.0</h2>
+<h2>UPC & Code128 Scanner v4.0</h2>
 <div id="qr-container">
   <div id="result-overlay"></div>
   <div id="qr-video"></div>
@@ -72,8 +72,9 @@ const config = {
   fps: 8,
   qrbox: calculateQrbox,
   disableFlip: false,
+  showZoomSliderIfSupported: true,
   focusMode: "continuous",
-  advanced:[{zoom: 1.0}],
+  advanced:[{zoom: 2.0}],
   rememberLastUsedCamera: true,
   aspectRatio: 1,
   experimentalFeatures: {
