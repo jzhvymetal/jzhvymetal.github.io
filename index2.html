@@ -38,7 +38,7 @@
 </style>
 </head>
 <body>
-<h2>UPC & Code128 Scanner v6.0</h2>
+<h2>UPC & Code128 Scanner v7.0</h2>
 <div id="qr-container">
   <div id="result-overlay"></div>
   <div id="qr-video"></div>
@@ -114,6 +114,9 @@ theInterval = setInterval(function () {
 	Html5Qrcode.applyVideoConstraints({
 	  focusMode: "continuous",
 	  advanced: [{ zoom: 2.0 }],
+	  width: { ideal: 1000 },
+	  height: { ideal: 1000 },
+	  frameRate: 8,	
 	});
 	clearInterval(theInterval);
   }
