@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UPC & Code128 Scanner Overlay 2.0</title>
+<title>UPC & Code128 Scanner Overlay</title>
 <style>
   body {
     margin: 0;
@@ -38,7 +38,7 @@
 </style>
 </head>
 <body>
-<h2>UPC & Code128 Scanner</h2>
+<h2>UPC & Code128 Scanner v2.0</h2>
 <div id="qr-container">
   <div id="result-overlay"></div>
   <div id="qr-video"></div>
@@ -69,8 +69,16 @@ function calculateQrbox(viewfinderWidth, viewfinderHeight) {
 }
 
 const config = {
-  fps: 10,
+  fps: 8,
   qrbox: calculateQrbox,
+  disableFlip: false,
+  focusMode: "continuous",
+  advanced:[{zoom: 1.0}],
+  rememberLastUsedCamera: true,
+  aspectRatio: 1,
+  experimentalFeatures: {
+  useBarCodeDetectorIfSupported: true
+			},
   formatsToSupport: [
     Html5QrcodeSupportedFormats.UPC_A,
     Html5QrcodeSupportedFormats.UPC_E,
