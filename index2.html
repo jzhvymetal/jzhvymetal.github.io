@@ -38,7 +38,7 @@
 </style>
 </head>
 <body>
-<h2>UPC & Code128 Scanner v5.0</h2>
+<h2>UPC & Code128 Scanner v6.0</h2>
 <div id="qr-container">
   <div id="result-overlay"></div>
   <div id="qr-video"></div>
@@ -106,10 +106,14 @@ Html5Qrcode.getCameras().then(cameras => {
   }
 }).catch(err => console.error(err));
 
-// Simulated scan for desktop testing
-if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-  setTimeout(() => showOverlay("✅ Simulated QR: 012345678901"), 2000);
-}
+  // wait 2 seconds to guarantee the camera has already started to apply the focus mode and zoom...
+  setTimeout(function () {
+	Html5Qrcode.applyVideoConstraints({
+	  focusMode: "continuous",
+	  advanced: [{ zoom: 2.0 }],
+	});
+  }, 2000);
+	
 </script>
 </body>
 </html>
