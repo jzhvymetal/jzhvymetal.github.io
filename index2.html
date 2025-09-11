@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPC & Code128 Scanner Overlay</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #111;
+    color: white;
+  }
+  #qr-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+  }
+  #qr-video {
+    width: 100%;
+  }
+  #result-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 200, 0, 0.8);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-size: 18px;
+    display: none;
+    z-index: 1000;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<h2>UPC & Code128 Scanner</h2>
+<div id="qr-container">
+  <div id="result-overlay"></div>
+  <div id="qr-video"></div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+const overlay = document.getElementById("result-overlay");
+
+function showOverlay(message) {
+  overlay.innerText = message;
+  overlay.style.display = "block";
+  setTimeout(() => overlay.style.display = "none", 2000);
+}
+
+function onScanSuccess(decodedText, decodedResult) {
+  console.log(decodedText, decodedResult);
+  showOverlay(`✅ ${decodedText}`);
+}
+
+function onScanFailure(error) {
+  // optional debug: console.warn(error);
+}
+
+function calculateQrbox(viewfinderWidth, viewfinderHeight) {
+  const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+  return { width: Math.floor(minEdge * 0.9), height: Math.floor(minEdge * 0.3) };
+}
+
+const config = {
+  fps: 10,
+  qrbox: calculateQrbox,
+  formatsToSupport: [
+    Html5QrcodeSupportedFormats.UPC_A,
+    Html5QrcodeSupportedFormats.UPC_E,
+    Html5QrcodeSupportedFormats.CODE_128
+  ]
+};
+
+const html5QrCode = new Html5Qrcode("qr-video");
+Html5Qrcode.getCameras().then(cameras => {
+  if(cameras && cameras.length) {
+    // try rear camera
+    const cameraId = cameras.find(cam => cam.label.toLowerCase().includes("back"))?.id || cameras[0].id;
+    html5QrCode.start(
+      { deviceId: { exact: cameraId } },
+      config,
+      onScanSuccess,
+      onScanFailure
+    );
+  }
+}).catch(err => console.error(err));
+
+// Simulated scan for desktop testing
+if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+  setTimeout(() => showOverlay("✅ Simulated QR: 012345678901"), 2000);
+}
+</script>
+</body>
+</html>
