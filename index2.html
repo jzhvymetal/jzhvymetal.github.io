@@ -38,7 +38,7 @@
 </style>
 </head>
 <body>
-<h2>UPC & Code128 Scanner v8.0</h2>
+<h2>UPC & Code128 Scanner v9.0</h2>
 <div id="qr-container">
   <div id="result-overlay"></div>
   <div id="qr-video"></div>
@@ -73,23 +73,10 @@ const formatsToSupport = [
  Html5QrcodeSupportedFormats.CODE_128,
 ];
 	
-const html5QrCode = new Html5Qrcode("reader", { formatsToSupport: formatsToSupport } );
+const html5QrCode = new Html5Qrcode(  "reader", { formatsToSupport: [ Html5QrcodeSupportedFormats.UPC_A ] });
 
+const config = { fps: 10, qrbox: calculateQrbox };	
 	
-const config = {
-  fps: 8,
-  qrbox: calculateQrbox,
-  disableFlip: false,
-  showZoomSliderIfSupported: true,
-  focusMode: "continuous",
-  advanced:[{zoom: 2.0}],
-  rememberLastUsedCamera: true,
-  aspectRatio: 1,
-  experimentalFeatures: 
-  	{
-	  useBarCodeDetectorIfSupported: false
-	},
-};
 
 Html5Qrcode.getCameras().then(cameras => {
   if(cameras && cameras.length) {
