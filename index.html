@@ -38,7 +38,7 @@
 </style>
 </head>
 <body>
-<h2>UPC & Code128 Scanner</h2>
+<h2>UPC & Code128 Scanner v2</h2>
 <div id="qr-container">
   <div id="result-overlay"></div>
   <div id="qr-video"></div>
@@ -47,11 +47,22 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
 const overlay = document.getElementById("result-overlay");
+let overlayTimeout = null;
 
 function showOverlay(message) {
   overlay.innerText = message;
   overlay.style.display = "block";
-  setTimeout(() => overlay.style.display = "none", 2000);
+
+  // Clear any previous timeout
+  if (overlayTimeout) {
+    clearTimeout(overlayTimeout);
+  }
+
+  // Keep it visible until timeout
+  overlayTimeout = setTimeout(() => {
+    overlay.style.display = "none";
+    overlayTimeout = null;
+  }, 1000);
 }
 
 function onScanSuccess(decodedText, decodedResult) {
@@ -60,7 +71,7 @@ function onScanSuccess(decodedText, decodedResult) {
 }
 
 function onScanFailure(error) {
-  // optional debug: console.warn(error);
+  // do nothing, don’t hide overlay here
 }
 
 function calculateQrbox(viewfinderWidth, viewfinderHeight) {
@@ -68,20 +79,40 @@ function calculateQrbox(viewfinderWidth, viewfinderHeight) {
   return { width: Math.floor(minEdge * 0.9), height: Math.floor(minEdge * 0.3) };
 }
 
-const config = {
-  fps: 10,
-  qrbox: calculateQrbox,
-  formatsToSupport: [
-    Html5QrcodeSupportedFormats.UPC_A,
-    Html5QrcodeSupportedFormats.UPC_E,
-    Html5QrcodeSupportedFormats.CODE_128
-  ]
+const formatsToSupport = [
+  Html5QrcodeSupportedFormats.UPC_A,
+  Html5QrcodeSupportedFormats.CODE_128,
+];
+	
+const html5QrCode = new Html5Qrcode("qr-video", { formatsToSupport: formatsToSupport });
+
+const videoConstraints = {
+  width: 720,
+  height: 480,
+  frameRate: 15,
+  focusMode: "continuous",
+  facingMode: "environment",
 };
 
-const html5QrCode = new Html5Qrcode("qr-video");
+const config = { 
+  fps: 8,
+  videoConstraints: videoConstraints,
+  qrbox: calculateQrbox,
+  disableFlip: false,
+  aspectRatio: 1,
+  showTorchButtonIfSupported: true,
+  focusMode: "continuous",
+  advanced: [{ zoom: 1.0 }],
+  rememberLastUsedCamera: false,
+  useBarCodeDetectorIfSupported: true,
+  experimentalFeatures: {
+    useBarCodeDetectorIfSupported: true,
+  },
+  willReadFrequently: true,
+};	
+
 Html5Qrcode.getCameras().then(cameras => {
   if(cameras && cameras.length) {
-    // try rear camera
     const cameraId = cameras.find(cam => cam.label.toLowerCase().includes("back"))?.id || cameras[0].id;
     html5QrCode.start(
       { deviceId: { exact: cameraId } },
@@ -92,10 +123,13 @@ Html5Qrcode.getCameras().then(cameras => {
   }
 }).catch(err => console.error(err));
 
-// Simulated scan for desktop testing
-if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-  setTimeout(() => showOverlay("✅ Simulated QR: 012345678901"), 2000);
-}
+let theInterval = setInterval(function () {
+  if (Html5Qrcode.getState() === Html5QrcodeScannerState.SCANNING) {
+    console.log("Applying video constraints");
+    Html5Qrcode.applyVideoConstraints(videoConstraints);
+    clearInterval(theInterval);
+  }
+}, 1000);
 </script>
 </body>
 </html>
