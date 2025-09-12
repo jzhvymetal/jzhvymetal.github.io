@@ -38,7 +38,7 @@
 </style>
 </head>
 <body>
-<h2>UPC & Code128 Scanner v9.0</h2>
+<h2>UPC & Code128 Scanner v10</h2>
 <div id="qr-container">
   <div id="result-overlay"></div>
   <div id="qr-video"></div>
@@ -73,7 +73,7 @@ const formatsToSupport = [
  Html5QrcodeSupportedFormats.CODE_128,
 ];
 	
-const html5QrCode = new Html5Qrcode(  "reader", { formatsToSupport: [ Html5QrcodeSupportedFormats.UPC_A ] });
+const html5QrCode = new Html5Qrcode(  "qr-video", { formatsToSupport: [ Html5QrcodeSupportedFormats.UPC_A ] });
 
 const config = { fps: 10, qrbox: calculateQrbox };	
 	
