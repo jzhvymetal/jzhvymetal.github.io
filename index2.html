@@ -38,7 +38,7 @@
 </style>
 </head>
 <body>
-<h2>UPC & Code128 Scanner v7.0</h2>
+<h2>UPC & Code128 Scanner v8.0</h2>
 <div id="qr-container">
   <div id="result-overlay"></div>
   <div id="qr-video"></div>
@@ -68,13 +68,16 @@ function calculateQrbox(viewfinderWidth, viewfinderHeight) {
   return { width: Math.floor(minEdge * 0.9), height: Math.floor(minEdge * 0.3) };
 }
 
+const formatsToSupport = [
+  Html5QrcodeSupportedFormats.UPC_A,
+ Html5QrcodeSupportedFormats.CODE_128,
+];
+	
+const html5QrCode = new Html5Qrcode("reader", { formatsToSupport: formatsToSupport } );
+
+	
 const config = {
   fps: 8,
- videoConstraints: {
-	width: 1920,
-	height: 1080,
-	facingMode: "environment",
-	},
   qrbox: calculateQrbox,
   disableFlip: false,
   showZoomSliderIfSupported: true,
@@ -82,17 +85,12 @@ const config = {
   advanced:[{zoom: 2.0}],
   rememberLastUsedCamera: true,
   aspectRatio: 1,
-  experimentalFeatures: {
-  useBarCodeDetectorIfSupported: false
-			},
-  formatsToSupport: [
-    Html5QrcodeSupportedFormats.UPC_A,
-    Html5QrcodeSupportedFormats.UPC_E,
-    Html5QrcodeSupportedFormats.CODE_128
-  ]
+  experimentalFeatures: 
+  	{
+	  useBarCodeDetectorIfSupported: false
+	},
 };
 
-const html5QrCode = new Html5Qrcode("qr-video");
 Html5Qrcode.getCameras().then(cameras => {
   if(cameras && cameras.length) {
     // try rear camera
