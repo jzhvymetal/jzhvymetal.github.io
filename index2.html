@@ -94,7 +94,7 @@ Html5Qrcode.getCameras().then(cameras => {
 
 let theInterval = null;
 theInterval = setInterval(function () {
-  if (Html5Qrcode.getState() === Html5QrcodeScannerState.SCANNING) {
+  if (Html5Qrcode.getState === Html5QrcodeScannerState.SCANNING) {
 	console.log("Applying video constraints");
 	Html5Qrcode.applyVideoConstraints({
 	  focusMode: "continuous",
